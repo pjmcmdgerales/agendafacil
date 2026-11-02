@@ -1,1 +1,147 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redefinir senha | AgendaFácil</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: #10213e;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px;
+      background: white;
+      border-radius: 16px;
+    }
+    h1 { color: #10213e; }
+    p { color: #58677c; line-height: 1.5; }
+    label { display: block; margin-top: 18px; }
+    input, button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 8px;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    input { border: 1px solid #ccd4df; }
+    button {
+      border: none;
+      background: #13b88b;
+      color: #092c24;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .5; cursor: wait; }
+    #mensagem { margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>AgendaFácil</h1>
+    <h2>Redefinir senha</h2>
+    <p>Escolha uma nova senha para sua conta.</p>
+
+    <form id="formulario">
+      <label for="senha">Nova senha</label>
+      <input id="senha" type="password"
+             minlength="8" required autocomplete="new-password">
+
+      <label for="confirmacao">Confirmar nova senha</label>
+      <input id="confirmacao" type="password"
+             minlength="8" required autocomplete="new-password">
+
+      <button id="salvar" disabled>Salvar nova senha</button>
+    </form>
+
+    <p id="mensagem">Verificando o link de recuperação...</p>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const mensagem = document.getElementById("mensagem");
+    const salvar = document.getElementById("salvar");
+    const formulario = document.getElementById("formulario");
+
+    let autorizado = false;
+
+    const fragmento = new URLSearchParams(
+      window.location.hash.substring(1)
+    );
+
+    if (fragmento.get("error")) {
+      mensagem.textContent =
+        "Link inválido ou expirado. Solicite um novo e-mail.";
+    } else if (fragmento.get("type") === "recovery" &&
+               fragmento.get("access_token") &&
+               fragmento.get("refresh_token")) {
+      const { error } = await sb.auth.setSession({
+        access_token: fragmento.get("access_token"),
+        refresh_token: fragmento.get("refresh_token")
+      });
+
+      if (error) {
+        mensagem.textContent =
+          "Não foi possível validar o link. Solicite outro.";
+      } else {
+        autorizado = true;
+      }
+    } else {
+      mensagem.textContent =
+        "Abra esta página pelo link recebido no e-mail.";
+    }
+
+    if (autorizado) {
+      history.replaceState(null, "", location.pathname);
+      mensagem.textContent = "Link validado. Defina sua nova senha.";
+      salvar.disabled = false;
+    }
+
+    formulario.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      if (!autorizado) return;
+
+      const senha = document.getElementById("senha").value;
+      const confirmacao =
+        document.getElementById("confirmacao").value;
+
+      if (senha !== confirmacao) {
+        mensagem.textContent = "As senhas não coincidem.";
+        return;
+      }
+
+      salvar.disabled = true;
+      mensagem.textContent = "Salvando sua senha...";
+
+      const { error } = await sb.auth.updateUser({
+        password: senha
+      });
+
+      if (error) {
+        mensagem.textContent = "Erro: " + error.message;
+        salvar.disabled = false;
+        return;
+      }
+
+      await sb.auth.signOut();
+      mensagem.textContent =
+        "Senha alterada com sucesso! Você já pode entrar no AgendaFácil.";
+      formulario.style.display = "none";
+    });
+  </script>
+</body>
+</html>
+
