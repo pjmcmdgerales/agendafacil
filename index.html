@@ -1,15 +1,128 @@
-<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1831"><title>AgendaFácil | Administração Geral</title>
-<style>
-:root{font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:#14213d;background:#f4f7fb}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}.layout{display:flex;min-height:100vh}.sidebar{width:255px;flex-shrink:0;background:#101f3c;color:#d7e4f5;padding:27px 16px;display:flex;flex-direction:column;gap:24px}.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:23px;color:#fff;padding:3px 12px}.brand span{color:#57e0ba}.brand-icon{background:#1f3b62;padding:9px;border-radius:12px}.side-label{font-size:10px;letter-spacing:2px;color:#7f98ba;padding:0 15px;font-weight:800}.menu{display:grid;gap:5px}.menu button{width:100%;text-align:left;border:0;background:transparent;color:#b9cbe1;padding:13px 14px;border-radius:11px;font-weight:650}.menu button.active,.menu button:hover{background:#254169;color:#fff}.sidebar-bottom{margin-top:auto;padding:16px 12px;border-top:1px solid #2b4264;font-size:12px;color:#8da5c4}.main{flex:1;min-width:0}.topbar{height:83px;background:#fff;border-bottom:1px solid #e5eaf2;display:flex;align-items:center;justify-content:space-between;padding:0 38px;gap:12px}.topbar small{display:block;color:#7a8aa3;margin-top:4px}.profile{display:flex;align-items:center;gap:10px;font-weight:700;font-size:13px}.avatar{background:#e5f9f1;color:#0c9568;border-radius:50%;width:37px;height:37px;display:grid;place-items:center}.content{padding:32px 38px;max-width:1460px;margin:auto}.eyebrow{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:#0e9b79;font-weight:850}.heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:23px;flex-wrap:wrap}h1{font-size:29px;letter-spacing:-.7px;margin:7px 0}p{color:#70809a;margin:5px 0}.btn{border:0;border-radius:10px;background:#15b88a;color:#062a28;font-weight:800;padding:12px 17px}.btn.secondary{background:#e9eef7;color:#2b4164}.btn.ghost{background:#fff;border:1px solid #e1e8f0;color:#243a5c}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}.card{background:white;border:1px solid #e8edf4;border-radius:17px;padding:23px;box-shadow:0 8px 26px rgba(17,37,71,.035)}.stat-label{font-size:13px;color:#7787a0;font-weight:650}.stat-num{font-size:28px;font-weight:850;margin:12px 0 5px;letter-spacing:-.7px}.stat-note{font-size:12px;color:#0b9c73}.two{display:grid;grid-template-columns:1.45fr 1fr;gap:20px}.section-title{font-size:18px;font-weight:800;margin:0 0 18px}.muted{color:#75859d}.pill{display:inline-block;padding:5px 10px;border-radius:100px;font-size:11px;font-weight:800;background:#e5f8ef;color:#0a946a}.pill.pro{background:#eeeaff;color:#6b4dd4}.pill.off{background:#fce7e7;color:#b84444}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#8b9ab0;font-size:11px;text-transform:uppercase;letter-spacing:.6px}td,th{padding:15px 10px;border-bottom:1px solid #edf0f5}tr:last-child td{border-bottom:0}.table-wrap{overflow-x:auto}.smallbtn{border:0;border-radius:8px;padding:7px 9px;background:#edf2fa;color:#1e3b63;font-size:12px;font-weight:750}.bar{display:flex;align-items:center;gap:13px;margin:19px 0}.bar strong{width:92px;font-size:12px}.bar-track{flex:1;height:11px;border-radius:30px;background:#eaf0f7;overflow:hidden}.bar-fill{height:100%;background:#22c69b;border-radius:30px}.bar-fill.purple{background:#7e69e8}.bar small{width:28px;text-align:right;color:#72809a}.view{display:none}.view.active{display:block}.notice{padding:13px 17px;border:1px solid #f6e6b8;background:#fff9e8;border-radius:11px;color:#866318;font-size:12px;margin-bottom:23px;line-height:1.5}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.field{display:grid;gap:7px;font-size:12px;font-weight:750;color:#455b7b}.field input,.field select{border:1px solid #dce5ef;border-radius:10px;padding:12px;background:#fff;color:#1c304f;width:100%}.form-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}.empty{padding:30px;text-align:center;color:#7d8ba1}.modal-backdrop{display:none;position:fixed;inset:0;background:#07152bb8;align-items:center;justify-content:center;padding:16px;z-index:10}.modal-backdrop.open{display:flex}.modal{width:100%;max-width:520px;background:#fff;border-radius:18px;padding:25px;max-height:90vh;overflow:auto}.modal h2{margin:0 0 18px}.flexhead{display:flex;justify-content:space-between;align-items:center;gap:12px}.filter{border:1px solid #dae3ee;border-radius:9px;padding:10px;color:#344e6f;background:white;max-width:100%}.cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.plan-price{font-size:30px;font-weight:850;margin:12px 0}.feature-list{padding-left:18px;color:#5e708b;font-size:13px;line-height:2}.foot{margin-top:24px;color:#9aa6b7;font-size:12px}.mobile-nav{display:none}@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.sidebar{width:215px}.content{padding:25px}.topbar{padding:0 25px}}@media(max-width:700px){.layout{display:block}.sidebar{width:100%;padding:15px;gap:12px}.brand{font-size:20px}.side-label,.sidebar-bottom{display:none}.menu{display:flex;overflow:auto}.menu button{white-space:nowrap;font-size:12px}.topbar{height:auto;padding:15px 18px}.profile{font-size:11px}.content{padding:20px 15px}.stats{gap:10px}.card{padding:17px}.stat-num{font-size:22px}.form-grid,.cards2{grid-template-columns:1fr}h1{font-size:24px}}
-</style></head><body><div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-icon">▦</div>Agenda<span>Fácil</span></div><div><div class="side-label">PAINEL DE CONTROLE</div><nav class="menu" id="menu"><button class="active" data-view="dashboard">▦ &nbsp; Visão geral</button><button data-view="estabelecimentos">▤ &nbsp; Estabelecimentos</button><button data-view="assinaturas">◇ &nbsp; Assinaturas</button><button data-view="financeiro">▥ &nbsp; Financeiro</button><button data-view="agendamentos">▣ &nbsp; Agendamentos</button><button data-view="configuracoes">⚙ &nbsp; Configurações</button></nav></div><div class="sidebar-bottom">AgendaFácil • Protótipo 2.0<br>Ambiente de demonstração</div></aside><div class="main"><header class="topbar"><div><strong>Central Administrativa</strong><small>Gestão da plataforma AgendaFácil</small></div><div class="profile"><div class="avatar">AF</div>Administrador Geral</div></header><main class="content"><div class="notice">⚠ <strong>Versão demonstrativa:</strong> sem login, banco de dados, cobrança ou reservas reais. Cadastros de teste ficam apenas neste navegador. Não insira dados pessoais reais ou informações de clientes.</div>
-<section class="view active" id="dashboard"><div class="heading"><div><div class="eyebrow">Visão geral</div><h1>Bem-vindo ao AgendaFácil</h1><p>Acompanhe os principais números da sua plataforma.</p></div><button class="btn" data-open-modal>+ Novo estabelecimento</button></div><div class="stats" id="stats"></div><div class="two"><div class="card"><div class="flexhead"><h2 class="section-title">Estabelecimentos recentes</h2><button class="smallbtn" data-go="estabelecimentos">Ver todos</button></div><div class="table-wrap"><table><thead><tr><th>Estabelecimento</th><th>Plano</th><th>Situação</th></tr></thead><tbody id="recent"></tbody></table></div></div><div class="card"><h2 class="section-title">Distribuição dos planos</h2><p style="font-size:13px">Assinaturas de demonstração</p><div id="plan-bars"></div><div style="margin-top:28px;padding:16px;background:#f4f8fc;border-radius:12px"><div class="stat-label">Planos comerciais</div><strong>Essencial R$ 49,99</strong><br><strong>Pró R$ 79,99</strong></div></div></div></section>
-<section class="view" id="estabelecimentos"><div class="heading"><div><div class="eyebrow">Clientes da plataforma</div><h1>Estabelecimentos</h1><p>Cadastre e organize os negócios atendidos.</p></div><button class="btn" data-open-modal>+ Novo estabelecimento</button></div><div class="card"><div class="flexhead"><h2 class="section-title">Lista de estabelecimentos</h2><input id="search" class="filter" placeholder="Buscar estabelecimento..." aria-label="Buscar estabelecimento"></div><div class="table-wrap"><table><thead><tr><th>Nome</th><th>Segmento</th><th>Plano</th><th>Status</th><th>Ações</th></tr></thead><tbody id="est-table"></tbody></table></div></div></section>
-<section class="view" id="assinaturas"><div class="heading"><div><div class="eyebrow">Comercial</div><h1>Planos e assinaturas</h1><p>Definição dos recursos por modalidade.</p></div></div><div class="cards2"><div class="card"><span class="pill">ESSENCIAL</span><div class="plan-price">R$ 49,99 <span class="muted" style="font-size:13px">/ mês</span></div><p>Para profissionais que atendem individualmente.</p><ul class="feature-list"><li>1 profissional</li><li>Agenda e página pública de reservas</li><li>Serviços, horários e disponibilidade</li><li>Controle básico de agendamentos</li></ul></div><div class="card"><span class="pill pro">PRÓ</span><div class="plan-price">R$ 79,99 <span class="muted" style="font-size:13px">/ mês</span></div><p>Para estabelecimentos com equipes.</p><ul class="feature-list"><li>Todos os recursos do Essencial</li><li>Até 5 profissionais</li><li>Gestão de equipe</li><li>Relatórios e recursos avançados</li></ul></div></div><div class="card" style="margin-top:18px"><h2 class="section-title">Assinaturas cadastradas</h2><div class="table-wrap"><table><thead><tr><th>Estabelecimento</th><th>Plano</th><th>Mensalidade</th><th>Situação</th></tr></thead><tbody id="subs-table"></tbody></table></div></div></section>
-<section class="view" id="financeiro"><div class="heading"><div><div class="eyebrow">Controle financeiro</div><h1>Financeiro</h1><p>Estimativa baseada nas assinaturas de teste ativas.</p></div></div><div class="stats" id="fin-stats"></div><div class="card"><h2 class="section-title">Como interpretar os valores</h2><p>Os totais são projeções de mensalidades cadastradas no protótipo, e não pagamentos recebidos. A integração com cobrança, vencimentos e comprovantes será desenvolvida posteriormente.</p></div></section>
-<section class="view" id="agendamentos"><div class="heading"><div><div class="eyebrow">Operação</div><h1>Agendamentos</h1><p>Visão administrativa das reservas de cada estabelecimento.</p></div></div><div class="card"><h2 class="section-title">Integração em desenvolvimento</h2><p>Na próxima fase, este painel mostrará agendamentos reais de cada empresa, com filtros de data, profissional e status. Os consumidores poderão escolher serviço, profissional e horário na página exclusiva do estabelecimento.</p></div></section>
-<section class="view" id="configuracoes"><div class="heading"><div><div class="eyebrow">Sistema</div><h1>Configurações</h1><p>Preferências gerais do protótipo.</p></div></div><div class="card"><h2 class="section-title">Ambiente de testes</h2><p>Os registros demonstrativos são armazenados localmente no navegador. Não são compartilhados entre computadores ou dispositivos.</p><div class="form-actions"><button class="btn secondary" id="reset">Restaurar dados fictícios</button></div></div></section><div class="foot">© AgendaFácil • Protótipo administrativo • Não utilizar para operação comercial</div></main></div></div>
-<div class="modal-backdrop" id="modal"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="flexhead"><h2 id="modal-title">Novo estabelecimento</h2><button class="smallbtn" id="close-modal" aria-label="Fechar">✕</button></div><form id="est-form"><div class="form-grid"><label class="field">Nome do estabelecimento<input name="nome" maxlength="70" required placeholder="Ex.: Barbearia Modelo"></label><label class="field">Segmento<select name="segmento"><option>Barbearia</option><option>Salão de beleza</option><option>Estética</option><option>Serviços gerais</option><option>Outro</option></select></label><label class="field">Plano<select name="plano"><option>Essencial</option><option>Pró</option></select></label><label class="field">Situação<select name="status"><option>Ativo</option><option>Suspenso</option></select></label></div><div class="form-actions"><button type="submit" class="btn">Salvar estabelecimento</button><button type="button" class="btn secondary" id="cancel-modal">Cancelar</button></div></form></div></div>
-<script>
-(()=>{'use strict';const KEY='agendafacil-demo-v2';const defaults=[{id:1,nome:'Barbearia Estilo Certo',segmento:'Barbearia',plano:'Pró',status:'Ativo'},{id:2,nome:'Studio Bella',segmento:'Salão de beleza',plano:'Essencial',status:'Ativo'},{id:3,nome:'Espaço Elegance',segmento:'Estética',plano:'Essencial',status:'Ativo'}];let entries;try{const saved=JSON.parse(localStorage.getItem(KEY));entries=Array.isArray(saved)?saved:structuredClone(defaults)}catch{entries=structuredClone(defaults)}const $=id=>document.getElementById(id);const fmt=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const price=e=>e.plano==='Pró'?79.99:49.99;const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(entries))}catch{}};const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const pill=(s)=>`<span class="pill ${s==='Pró'?'pro':s==='Suspenso'?'off':''}">${esc(s)}</span>`;function render(){const active=entries.filter(e=>e.status==='Ativo'),total=active.reduce((s,e)=>s+price(e),0),ess=active.filter(e=>e.plano==='Essencial').length,pro=active.filter(e=>e.plano==='Pró').length; $('stats').innerHTML=[[entries.length,'Estabelecimentos','Cadastrados no protótipo'],[active.length,'Assinaturas ativas','Registros de demonstração'],[fmt(total),'Receita mensal prevista','Não representa recebimentos'],[pro,'Assinaturas Pró','Estabelecimentos ativos']].map(([n,l,d])=>`<div class="card"><div class="stat-label">${l}</div><div class="stat-num">${n}</div><div class="stat-note">${d}</div></div>`).join('');$('recent').innerHTML=entries.slice(-5).reverse().map(e=>`<tr><td><strong>${esc(e.nome)}</strong></td><td>${pill(e.plano)}</td><td>${pill(e.status)}</td></tr>`).join('')||'<tr><td colspan="3">Nenhum estabelecimento</td></tr>';$('plan-bars').innerHTML=[['Essencial',ess,''],['Pró',pro,'purple']].map(([name,n,cls])=>`<div class="bar"><strong>${name}</strong><div class="bar-track"><div class="bar-fill ${cls}" style="width:${active.length?100*n/active.length:0}%"></div></div><small>${n}</small></div>`).join('');const query=$('search').value.trim().toLowerCase();$('est-table').innerHTML=entries.filter(e=>e.nome.toLowerCase().includes(query)).map(e=>`<tr><td><strong>${esc(e.nome)}</strong></td><td>${esc(e.segmento)}</td><td>${pill(e.plano)}</td><td>${pill(e.status)}</td><td><button class="smallbtn" data-toggle="${e.id}">${e.status==='Ativo'?'Suspender':'Ativar'}</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Nenhum resultado</td></tr>';$('subs-table').innerHTML=entries.map(e=>`<tr><td>${esc(e.nome)}</td><td>${pill(e.plano)}</td><td>${fmt(price(e))}</td><td>${pill(e.status)}</td></tr>`).join('');$('fin-stats').innerHTML=[[fmt(total),'Mensalidade prevista'],[fmt(total*12),'Projeção anual'],[active.length,'Assinaturas ativas'],[entries.length-active.length,'Assinaturas suspensas']].map(([n,l])=>`<div class="card"><div class="stat-label">${l}</div><div class="stat-num">${n}</div></div>`).join('')}function go(view){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===view));document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===view));window.scrollTo({top:0,behavior:'smooth'})}document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));const modal=$('modal');function close(){modal.classList.remove('open')}document.querySelectorAll('[data-open-modal]').forEach(b=>b.addEventListener('click',()=>modal.classList.add('open')));$('close-modal').onclick=close;$('cancel-modal').onclick=close;modal.addEventListener('click',e=>{if(e.target===modal)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});$('est-form').addEventListener('submit',e=>{e.preventDefault();const d=new FormData(e.currentTarget);entries.push({id:Date.now(),nome:String(d.get('nome')).trim(),segmento:String(d.get('segmento')),plano:String(d.get('plano')),status:String(d.get('status'))});save();render();e.currentTarget.reset();close();go('estabelecimentos')});$('est-table').addEventListener('click',e=>{const b=e.target.closest('[data-toggle]');if(!b)return;const item=entries.find(x=>String(x.id)===b.dataset.toggle);if(item){item.status=item.status==='Ativo'?'Suspenso':'Ativo';save();render()}});$('search').addEventListener('input',render);$('reset').onclick=()=>{if(confirm('Restaurar os dados fictícios? Os cadastros de teste deste navegador serão apagados.')){entries=structuredClone(defaults);save();render();go('dashboard')}};render()})();
-</script></body></html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgendaFácil | Acesso Administrativo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; background: #10213e;
+      font-family: Arial, sans-serif;
+    }
+    .card {
+      background: white; width: 100%; max-width: 420px;
+      padding: 36px; border-radius: 16px;
+      box-shadow: 0 15px 40px #0003;
+    }
+    h1 { color: #10213e; margin-bottom: 5px; }
+    .sub { color: #64748b; margin-bottom: 28px; }
+    label { display: block; margin: 16px 0 7px; font-weight: bold; }
+    input {
+      width: 100%; padding: 13px; border: 1px solid #cbd5e1;
+      border-radius: 8px; font-size: 15px;
+    }
+    button {
+      width: 100%; margin-top: 24px; padding: 14px;
+      border: 0; border-radius: 8px;
+      background: #10b981; color: #082f26;
+      font-size: 16px; font-weight: bold; cursor: pointer;
+    }
+    button:disabled { opacity: .6; cursor: wait; }
+    a { color: #087e67; }
+    .forgot { text-align: right; margin-top: 13px; }
+    #message { margin-top: 16px; color: #b91c1c; }
+    .footer { margin-top: 26px; color: #64748b; font-size: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Agenda<span style="color:#10b981">Fácil</span></h1>
+    <p class="sub">Central Administrativa | Acesso restrito</p>
+
+    <form id="login">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required
+             placeholder="Digite seu e-mail">
+
+      <label for="password">Senha</label>
+      <input id="password" type="password" autocomplete="current-password"
+             required placeholder="Digite sua senha">
+
+      <div class="forgot">
+        <a href="#" id="forgot">Esqueci minha senha</a>
+      </div>
+
+      <button id="submit" type="submit">Entrar no painel</button>
+      <p id="message" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="footer">AgendaFácil | Administração Geral</div>
+  </main>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const form = document.getElementById("login");
+    const message = document.getElementById("message");
+    const button = document.getElementById("submit");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "";
+      button.disabled = true;
+
+      try {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        const { data, error } = await sb.auth.signInWithPassword({
+          email, password
+        });
+        if (error) throw error;
+
+        const { data: profile, error: profileError } = await sb
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .single();
+
+        if (profileError || profile?.role !== "admin") {
+          await sb.auth.signOut();
+          throw new Error("Usuário sem permissão de Administrador Geral.");
+        }
+
+        window.location.replace("./painel.html");
+      } catch (error) {
+        message.textContent = error.message || "Não foi possível entrar.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("forgot").addEventListener("click", async (event) => {
+      event.preventDefault();
+      const email = document.getElementById("email").value.trim();
+
+      if (!email) {
+        message.textContent = "Informe seu e-mail antes de recuperar a senha.";
+        return;
+      }
+
+      const redirectTo = new URL("./redefinir-senha.html", location.href).href;
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+
+      message.style.color = error ? "#b91c1c" : "#087e67";
+      message.textContent = error
+        ? "Não foi possível solicitar a recuperação."
+        : "Se o e-mail estiver cadastrado, você receberá instruções.";
+    });
+  </script>
+</body>
+</html>
