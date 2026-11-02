@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgendaFácil | Administração Geral</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f3f6fa;
+      color: #14213d;
+      font-family: Arial, sans-serif;
+    }
+    .hidden { display: none !important; }
+    .loading {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .layout { display: flex; min-height: 100vh; }
+    aside {
+      width: 245px;
+      background: #10213e;
+      color: white;
+      padding: 26px 18px;
+      flex-shrink: 0;
+    }
+    .brand { font-size: 25px; font-weight: bold; margin-bottom: 40px; }
+    .brand span { color: #10b981; }
+    nav button {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 8px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    nav button.active, nav button:hover { background: #29466f; }
+    main { flex: 1; min-width: 0; }
+    header {
+      background: white;
+      padding: 24px 35px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    h1 { margin: 0 0 8px; }
+    .muted { color: #64748b; }
+    .content { padding: 35px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px;
+      margin: 25px 0;
+    }
+    .card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .number { font-size: 30px; font-weight: bold; margin-top: 12px; }
+    .action {
+      background: #10b981;
+      color: #082f26;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .logout { background: #e2e8f0; color: #14213d; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    .error { color: #b91c1c; }
+    @media(max-width: 750px) {
+      .layout { flex-direction: column; }
+      aside { width: 100%; }
+      header { padding: 20px; flex-wrap: wrap; }
+      .content { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="loading">Verificando acesso administrativo...</div>
+
+  <div id="app" class="layout hidden">
+    <aside>
+      <div class="brand">Agenda<span>Fácil</span></div>
+      <nav>
+        <button class="active" data-page="overview">Visão geral</button>
+        <button data-page="establishments">Estabelecimentos</button>
+        <button data-page="subscriptions">Assinaturas</button>
+        <button data-page="finance">Financeiro</button>
+        <button data-page="bookings">Agendamentos</button>
+        <button data-page="settings">Configurações</button>
+      </nav>
+    </aside>
+
+    <main>
+      <header>
+        <div>
+          <strong>Central Administrativa</strong>
+          <div class="muted">Gestão da plataforma AgendaFácil</div>
+        </div>
+        <button id="logout" class="action logout">Sair da conta</button>
+      </header>
+
+      <div class="content">
+        <h1 id="page-title">Visão geral</h1>
+        <p class="muted" id="page-description">
+          Informações dos estabelecimentos cadastrados no banco de dados.
+        </p>
+
+        <section id="overview">
+          <div class="cards">
+            <div class="card">
+              Estabelecimentos
+              <div id="total" class="number">0</div>
+            </div>
+            <div class="card">
+              Ativos
+              <div id="active" class="number">0</div>
+            </div>
+            <div class="card">
+              Plano Essencial
+              <div id="essential" class="number">0</div>
+            </div>
+            <div class="card">
+              Plano Pró
+              <div id="pro" class="number">0</div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Estabelecimentos cadastrados</h2>
+            <div id="table-area">Carregando...</div>
+          </div>
+        </section>
+
+        <section id="other-page" class="card hidden">
+          <h2 id="other-title"></h2>
+          <p class="muted">
+            Área em preparação para integração com o banco de dados.
+            Nenhum valor financeiro ou agendamento será simulado.
+          </p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const loading = document.getElementById("loading");
+    const app = document.getElementById("app");
+
+    function redirectToLogin() {
+      window.location.replace("./index.html");
+    }
+
+    async function initialize() {
+      try {
+        const { data: auth, error: authError } = await sb.auth.getUser();
+        if (authError || !auth.user) {
+          redirectToLogin();
+          return;
+        }
+
+        const { data: profile, error: profileError } = await sb
+          .from("profiles")
+          .select("role")
+          .eq("id", auth.user.id)
+          .single();
+
+        if (profileError || profile?.role !== "admin") {
+          await sb.auth.signOut();
+          redirectToLogin();
+          return;
+        }
+
+        app.classList.remove("hidden");
+        loading.classList.add("hidden");
+        await loadEstablishments();
+      } catch (error) {
+        loading.textContent = "Erro ao verificar acesso. Tente novamente.";
+        loading.classList.add("error");
+      }
+    }
+
+    async function loadEstablishments() {
+      const area = document.getElementById("table-area");
+
+      const { data, error } = await sb
+        .from("establishments")
+        .select("name,plan,status")
+        .order("name");
+
+      if (error) {
+        area.textContent = "Erro ao consultar estabelecimentos: " + error.message;
+        return;
+      }
+
+      const establishments = data || [];
+      document.getElementById("total").textContent = establishments.length;
+      document.getElementById("active").textContent =
+        establishments.filter(e => e.status === "ativo").length;
+      document.getElementById("essential").textContent =
+        establishments.filter(e => e.plan === "essencial").length;
+      document.getElementById("pro").textContent =
+        establishments.filter(e => e.plan === "pro").length;
+
+      area.replaceChildren();
+
+      if (!establishments.length) {
+        area.textContent = "Nenhum estabelecimento cadastrado.";
+        return;
+      }
+
+      const table = document.createElement("table");
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+
+      for (const label of ["Estabelecimento", "Plano", "Situação"]) {
+        const th = document.createElement("th");
+        th.textContent = label;
+        headerRow.appendChild(th);
+      }
+
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      for (const establishment of establishments) {
+        const tr = document.createElement("tr");
+        for (const value of [
+          establishment.name,
+          establishment.plan,
+          establishment.status
+        ]) {
+          const td = document.createElement("td");
+          td.textContent = value ?? "";
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      }
+
+      table.appendChild(tbody);
+      area.appendChild(table);
+    }
+
+    const titles = {
+      overview: "Visão geral",
+      establishments: "Estabelecimentos",
+      subscriptions: "Assinaturas",
+      finance: "Financeiro",
+      bookings: "Agendamentos",
+      settings: "Configurações"
+    };
+
+    document.querySelectorAll("nav button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("nav button").forEach(b =>
+          b.classList.remove("active")
+        );
+        button.classList.add("active");
+
+        const page = button.dataset.page;
+        document.getElementById("page-title").textContent = titles[page];
+        document.getElementById("overview").classList.toggle(
+          "hidden", page !== "overview" && page !== "establishments"
+        );
+        document.getElementById("other-page").classList.toggle(
+          "hidden", page === "overview" || page === "establishments"
+        );
+        document.getElementById("other-title").textContent = titles[page];
+      });
+    });
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      await sb.auth.signOut();
+      redirectToLogin();
+    });
+
+    initialize();
+  </script>
+</body>
+</html>
