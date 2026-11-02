@@ -151,6 +151,44 @@
           </div>
         </section>
 
+        
+<section id="establishments-page" class="card hidden">
+  <h2>Cadastrar estabelecimento</h2>
+  <p class="muted">Preencha os dados do novo estabelecimento.</p>
+
+  <form id="establishment-form">
+    <label for="est-name">Nome do estabelecimento</label>
+    <input id="est-name" type="text" required>
+
+    <label for="est-responsible">Nome do responsável</label>
+    <input id="est-responsible" type="text" required>
+
+    <label for="est-email">E-mail</label>
+    <input id="est-email" type="email" required>
+
+    <label for="est-phone">Telefone / WhatsApp</label>
+    <input id="est-phone" type="tel" required>
+
+    <label for="est-plan">Plano contratado</label>
+    <select id="est-plan" required>
+      <option value="essencial">Essencial</option>
+      <option value="pro">Pró</option>
+    </select>
+
+    <label for="est-status">Situação</label>
+    <select id="est-status" required>
+      <option value="ativo">Ativo</option>
+      <option value="suspenso">Suspenso</option>
+    </select>
+
+    <button type="submit" class="action">
+      Salvar estabelecimento
+    </button>
+
+    <p id="est-form-message" role="status"></p>
+  </form>
+</section>
+
         <section id="other-page" class="card hidden">
           <h2 id="other-title"></h2>
           <p class="muted">
@@ -290,8 +328,13 @@
           "hidden", page === "overview" || page === "establishments"
         );
         document.getElementById("other-title").textContent = titles[page];
-      });
+      document.getElementById("establishments-page").classList.toggle(
+  "hidden",
+  page !== "establishments"
+);
     });
+
+
 
     document.getElementById("logout").addEventListener("click", async () => {
       await sb.auth.signOut();
