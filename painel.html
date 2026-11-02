@@ -332,7 +332,19 @@
   "hidden",
   page !== "establishments"
 );
+   
     });
+  });
+
+  document.getElementById("logout").addEventListener("click", async () => {
+    await sb.auth.signOut();
+    redirectToLogin();
+  });
+
+  initialize();
+</script>
+</body>
+</html>
 
 
 
