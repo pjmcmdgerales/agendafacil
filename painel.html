@@ -46,6 +46,9 @@
     .actions{grid-column:1/-1;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
     .action{background:var(--green);border:0;border-radius:9px;color:#062b22;font-weight:700;padding:14px 24px}
     .action:disabled{opacity:.6;cursor:wait}
+    .edit-btn{border:1px solid #b8cce0;background:#eff6ff;color:var(--navy);padding:9px 15px;border-radius:8px;font-weight:600}
+    .edit-btn:hover{background:#dbeafe}
+    .cancel-btn{border:1px solid #cbd5e1;background:white;color:var(--navy);padding:13px 20px;border-radius:9px;font-weight:600}
     .message{grid-column:1/-1;margin:0;font-size:14px;min-height:20px}
     .error{color:#b91c1c}.success{color:#047857}
     @media(max-width:1000px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -87,7 +90,7 @@
         <section id="establishments-page" class="hidden">
           <div class="card"><h2>Estabelecimentos cadastrados</h2><div id="establishments-table">Carregando...</div></div>
           <div class="card">
-            <h2>Cadastrar estabelecimento</h2>
+            <h2 id="est-form-title">Cadastrar estabelecimento</h2>
             <p class="muted">Preencha os dados do novo estabelecimento.</p>
             <form id="est-form">
               <div class="est-field full"><label for="est-name">Nome do estabelecimento</label><input id="est-name" name="name" type="text" placeholder="Nome do estabelecimento" required></div>
@@ -96,7 +99,7 @@
               <div class="est-field"><label for="est-phone">Telefone / WhatsApp</label><input id="est-phone" name="phone" type="tel" placeholder="(27) 99999-9999" required></div>
               <div class="est-field"><label for="est-plan">Plano contratado</label><select id="est-plan" name="plan" required><option value="essencial">Essencial</option><option value="pro">Pró</option></select></div>
               <div class="est-field"><label for="est-status">Situação</label><select id="est-status" name="status" required><option value="ativo">Ativo</option><option value="suspenso">Suspenso</option></select></div>
-              <div class="actions"><button class="action" id="save-est" type="submit">Salvar estabelecimento</button></div>
+              <div class="actions"><button class="action" id="save-est" type="submit">Salvar estabelecimento</button><button class="cancel-btn hidden" id="cancel-edit" type="button">Cancelar edição</button></div>
               <p id="est-form-message" class="message" role="status" aria-live="polite"></p>
             </form>
           </div>
@@ -113,6 +116,7 @@
     const $ = id => document.getElementById(id);
     const titles = {overview:'Visão geral',establishments:'Estabelecimentos',subscriptions:'Assinaturas',finance:'Financeiro',bookings:'Agendamentos',settings:'Configurações'};
     let establishments = [];
+    let editingId = null;
     const login = () => window.location.replace('./index.html');
     const setMessage = (text, kind='') => { $('est-form-message').textContent=text; $('est-form-message').className='message '+kind; };
 
@@ -122,15 +126,49 @@
       const table=document.createElement('table');
       const head=document.createElement('thead');
       const tr=document.createElement('tr');
-      ['Estabelecimento','Plano','Situação'].forEach(label=>{const th=document.createElement('th');th.textContent=label;tr.appendChild(th);});
+      ['Estabelecimento','Plano','Situação',...(target==='establishments-table'?['Ações']:[])].forEach(label=>{const th=document.createElement('th');th.textContent=label;tr.appendChild(th);});
       head.appendChild(tr);table.appendChild(head);
       const body=document.createElement('tbody');
       establishments.forEach(est=>{
         const row=document.createElement('tr');
         [est.name,est.plan==='pro'?'Pró':'Essencial',est.status==='ativo'?'Ativo':'Suspenso'].forEach(value=>{const td=document.createElement('td');td.textContent=value||'—';row.appendChild(td);});
+        if(target==='establishments-table'){
+          const cell=document.createElement('td');
+          const edit=document.createElement('button');
+          edit.type='button';edit.className='edit-btn';edit.textContent='Editar';
+          edit.addEventListener('click',()=>startEditing(est.id));
+          cell.appendChild(edit);row.appendChild(cell);
+        }
         body.appendChild(row);
       });
       table.appendChild(body);wrapper.appendChild(table);$(target).replaceChildren(wrapper);
+    }
+
+    function resetEditing(){
+      editingId=null;
+      $('est-form').reset();
+      $('est-form-title').textContent='Cadastrar estabelecimento';
+      $('save-est').textContent='Salvar estabelecimento';
+      $('cancel-edit').classList.add('hidden');
+      setMessage('');
+    }
+
+    function startEditing(id){
+      const est=establishments.find(item=>item.id===id);
+      if(!est)return;
+      editingId=id;
+      $('est-name').value=est.name||'';
+      $('est-responsible').value=est.responsible_name||'';
+      $('est-email').value=est.email||'';
+      $('est-phone').value=est.phone||'';
+      $('est-plan').value=est.plan||'essencial';
+      $('est-status').value=est.status||'ativo';
+      $('est-form-title').textContent='Editar estabelecimento';
+      $('save-est').textContent='Salvar alterações';
+      $('cancel-edit').classList.remove('hidden');
+      setMessage('Você está editando '+est.name+'.');
+      $('est-form-title').scrollIntoView({behavior:'smooth',block:'start'});
+      $('est-name').focus({preventScroll:true});
     }
 
     function render() {
@@ -142,7 +180,7 @@
     }
 
     async function loadEstablishments() {
-      const {data,error}=await sb.from('establishments').select('id,name,plan,status').order('created_at',{ascending:false});
+      const {data,error}=await sb.from('establishments').select('id,name,responsible_name,email,phone,plan,status').order('created_at',{ascending:false});
       if(error) throw error;
       establishments=data||[];render();
     }
@@ -175,6 +213,7 @@
     }
 
     document.querySelectorAll('nav button').forEach(button=>button.addEventListener('click',()=>showPage(button.dataset.page)));
+    $('cancel-edit').addEventListener('click',resetEditing);
     $('logout').addEventListener('click',async()=>{await sb.auth.signOut();login();});
     $('est-form').addEventListener('submit',async event=>{
       event.preventDefault();
@@ -188,13 +227,18 @@
         status:$('est-status').value
       };
       try {
-        const {error}=await sb.from('establishments').insert(payload);
+        const isEditing=Boolean(editingId);
+        const {data,error}=isEditing
+          ? await sb.from('establishments').update(payload).eq('id',editingId).select('id')
+          : await sb.from('establishments').insert(payload).select('id');
         if(error) throw error;
-        $('est-form').reset();await loadEstablishments();
-        setMessage('Estabelecimento cadastrado com sucesso!','success');
+        if(!data?.length) throw new Error('Nenhum registro foi alterado. Verifique as permissões.');
+        resetEditing();
+        await loadEstablishments();
+        setMessage(isEditing?'Estabelecimento atualizado com sucesso!':'Estabelecimento cadastrado com sucesso!','success');
       } catch(error) {
         console.error('Erro ao cadastrar:',error);
-        setMessage('Não foi possível salvar. Confira se as colunas responsible_name, email e phone existem na tabela establishments e se sua conta tem permissão.','error');
+        setMessage('Não foi possível salvar. Verifique os dados e as permissões no Supabase. Detalhes no console do navegador.','error');
       } finally {button.disabled=false;}
     });
     initialize();
